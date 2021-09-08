@@ -10,3 +10,6 @@
 3. Look at 'data_out.txt'
 
 4. Profit
+
+# Example data
+The current data in 'log.txt' and 'data.csv' is the initial data that Courtney sent me.
