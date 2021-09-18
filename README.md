@@ -1,15 +1,12 @@
-# Getting started
-
-1. Save input file as 'log.txt' and remove all but the x and y rows (no ROI info)
-
-2. Run the following:
+# Usage
+## Single file
 ```
-./parser.py
+./parser.py --in-file IN_FILE.txt --out-file OUT_FILE.csv
 ```
-
-3. Look at 'data_out.txt'
-
-4. Profit
+## Multiple files
+```
+./parser.py --in-dir IN_DIR_PATH --out-dir OUT_DIR_PATH
+```
 
 # Example data
 The current data in 'log.txt' and 'data.csv' is the initial data that Courtney sent me.
