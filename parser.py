@@ -12,35 +12,46 @@ Dependencies:
 
 import pandas
 
+def log_df_to_xy_df(df):
+    """
+    turns log dataframe `df` into x,y columned dataframe
+    """
+    # split out the coordinate labels
+    df[['xynum','coordinate']] = df[0].str.split(expand=True)
+
+    df = df[[1, 'xynum']]
+
+
+    # get coordinate indecies
+    df[['yres','xnum']] = df['xynum'].str.split('x', expand=True)
+    df[['xres','ynum']] = df['xynum'].str.split('y', expand=True)
+
+
+    ## coordinate index columns
+    df = df.fillna(0)
+    df['element_num'] = df['ynum'].astype(int) + df['xnum'].astype(int)
+    df = df[['element_num','xres','yres', 1]]
+    df['cnum'] = df['xres'] + df['yres']
+
+
+    # remove extra columns
+    df = df[['element_num','cnum', 1]]
+
+    # remove numbers from x,y columns
+    df['cnum'] = df['cnum'].str.replace('\d+', '')
+
+    # pivot on x,y pairs
+    final_data = df.pivot(index='element_num', columns='cnum').rename_axis(None)
+
+    return final_data
+
+
+
+
 # open file (ROI info have been removed)
 df = pandas.read_csv('log.txt', sep=':', header=None) # change 'log.txt' to your file
 
-# split out the coordinate labels
-df[['xynum','coordinate']] = df[0].str.split(expand=True)
-
-df = df[[1, 'xynum']]
-
-
-# get coordinate indecies
-df[['yres','xnum']] = df['xynum'].str.split('x', expand=True)
-df[['xres','ynum']] = df['xynum'].str.split('y', expand=True)
-
-
-## coordinate index columns
-df = df.fillna(0)
-df['element_num'] = df['ynum'].astype(int) + df['xnum'].astype(int)
-df = df[['element_num','xres','yres', 1]]
-df['cnum'] = df['xres'] + df['yres']
-
-
-# remove extra columns
-df = df[['element_num','cnum', 1]]
-
-# remove numbers from x,y columns
-df['cnum'] = df['cnum'].str.replace('\d+', '')
-
-# pivot on x,y pairs
-final_data = df.pivot(index='element_num', columns='cnum').rename_axis(None)
+final_data = log_df_to_xy_df(df)
 
 # export to csv
 final_data.to_csv('data_out.csv')
